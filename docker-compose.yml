@@ -1,0 +1,7 @@
+version: "3"
+services:
+  springrest:
+    build: .
+    image: ghcr.io/qebyn/hello-springrest/hello-springrest/hello-springrest:v1
+    ports:
+      - 80:8080
