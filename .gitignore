@@ -34,3 +34,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Elastic Beanstalk
+elasticfolder/.elasticbeanstalk/*
+!elasticfolder/.elasticbeanstalk/*.cfg.yml
+!elasticfolder/.elasticbeanstalk/*.global.yml
+!elasticfolder/.elasticbeanstalk/config.yml
+
