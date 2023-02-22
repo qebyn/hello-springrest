@@ -1,7 +1,7 @@
 version: "3"
 services:
-  springrest:
+  amazoncorrettospring:
     build: .
-    image: ghcr.io/qebyn/hello-springrest/hello-springrest/hello-springrest:v1
+    image: ghcr.io/qebyn/hello-springrest/springrest:latest
     ports:
-      - 80:8080
+      - "80:8080"
