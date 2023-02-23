@@ -16,6 +16,7 @@ pipeline {
                     junit skipOldReports: true, skipPublishingChecks: true, testResults: 'build/test-results/test/*xml'
                     jacoco classPattern: 'build/classes/java/main', execPattern: 'build/jacoco/*.exec', sourcePattern: 'src/main/java/com/example/restservice'
                     recordIssues(tools: [pmdParser(pattern: 'build/reports/pmd/*.xml')])
+                    recordIssues(tools: [trivy(pattern: 'trivy repo -f json -o results_repo.json https://github.com/qebyn/hello-springrest')])
                 }
             }
         }
@@ -26,6 +27,12 @@ pipeline {
                 sshagent(['github_access_ssh']) {
                     sh 'git push --tags'
                     sh "docker tag ghcr.io/qebyn/hello-springrest/springrest:latest ghcr.io/qebyn/hello-springrest/springrest:1.0.${BUILD_NUMBER}"
+                    sh "docker run -d -p 8080:8080 ghcr.io/qebyn/hello-springrest/springrest:1.0.${BUILD_NUMBER}"
+                }
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: '**/*.jar', fingerprint: true
                 }
             }
         }
@@ -47,3 +54,4 @@ pipeline {
         }
     }
 }
+
