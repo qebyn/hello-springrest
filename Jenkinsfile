@@ -13,6 +13,7 @@ pipeline {
             post {
                 always {
                     junit skipOldReports: true, skipPublishingChecks: true, testResults: 'build/test-results/test/*xml'
+                    jacoco classPattern: 'app/build/classes/java/main', execPattern: 'app/build/jacoco/*.exec', inclusionPattern: 'app/build/java/main', sourcePattern: 'app/src/main/java'
                 }
             }
         }
@@ -44,4 +45,3 @@ pipeline {
         }
     }
 }
-
