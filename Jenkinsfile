@@ -5,7 +5,7 @@ pipeline {
         ansiColor('xterm')
     }
     stages {
-        stage('Testingandvuln') {
+        stage('Testing and Vulnerabilities') {
             steps {
                      sh 'docker-compose config'
                      sh './gradlew test'
@@ -23,7 +23,7 @@ pipeline {
  
         }
     
-        stage('BuildDocker') {
+        stage('Building Docker Image') {
             steps {
                 sh 'docker-compose build'
                 sh 'git tag 1.0.${BUILD_NUMBER}'
@@ -33,7 +33,7 @@ pipeline {
                 sh "docker tag ghcr.io/qebyn/hello-springrest/springrest:latest ghcr.io/qebyn/hello-springrest/springrest:1.0.${BUILD_NUMBER}"
             }
         }
-        stage('ScanningDockerandvuln'){
+        stage('Scanning Docker Image and Vulnerabilities'){
               steps {
                 sh 'trivy image --format json -o docker-report.json  ghcr.io/qebyn/hello-springrest/springrest:1.0.${BUILD_NUMBER}'
                 sh 'trivy filesystem -format json -o vulnfs.json .'
@@ -44,7 +44,7 @@ pipeline {
                         }       
                 }
         }
-        stage('Dockerlogin'){
+        stage('Docker Login and Push'){
            steps {
              withCredentials([string(credentialsId: 'github-tokenqebyn', variable: 'PAT')]) {
                  sh 'echo $PAT | docker login ghcr.io -u qebyn --password-stdin && docker-compose push && docker push ghcr.io/qebyn/hello-springrest/springrest:1.0.${BUILD_NUMBER}'
@@ -53,7 +53,7 @@ pipeline {
 
            }
         }
-        stage('BuildingElastic') {
+        stage('Building Elastic Beanstalk Environment') {
             steps {
                 withAWS(credentials:'aws_access_key') {
                     dir('./elasticfolder') {
