@@ -8,12 +8,12 @@ pipeline {
         stage('Testing the application') {
             steps {
                 sh 'docker-compose config'
-                sh './gradlew test'
+                sh './gradlew test jacocoTestReport'
             }
             post {
                 always {
                     junit skipOldReports: true, skipPublishingChecks: true, testResults: 'build/test-results/test/*xml'
-                    jacoco classPattern: 'app/build/classes/java/main', execPattern: 'app/build/jacoco/*.exec', inclusionPattern: 'app/build/java/main', sourcePattern: 'app/src/main/java'
+                    jacoco classPattern: 'build/classes/java/main', execPattern: 'build/jacoco/test.exec', sourcePattern: 'src/main/java'
                 }
             }
         }
@@ -28,9 +28,9 @@ pipeline {
             }
         }
         stage('Publishing the Docker image') {
-           steps {
-             withCredentials([string(credentialsId: 'github-tokenqebyn', variable: 'PAT')]) {
-                 sh 'echo $PAT | docker login ghcr.io -u qebyn --password-stdin && docker-compose push && docker push ghcr.io/qebyn/hello-springrest/springrest:1.0.${BUILD_NUMBER}'
+            steps {
+                withCredentials([string(credentialsId: 'github-tokenqebyn', variable: 'PAT')]) {
+                    sh 'echo $PAT | docker login ghcr.io -u qebyn --password-stdin && docker-compose push && docker push ghcr.io/qebyn/hello-springrest/springrest:1.0.${BUILD_NUMBER}'
                 }
             }
         }
@@ -45,3 +45,4 @@ pipeline {
         }
     }
 }
+
