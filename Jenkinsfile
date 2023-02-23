@@ -13,7 +13,7 @@ pipeline {
             post {
                 always {
                     junit skipOldReports: true, skipPublishingChecks: true, testResults: 'build/test-results/test/*xml'
-                    jacoco classPattern: 'build/classes/java/main', execPattern: 'build/jacoco/test.exec', sourcePattern: 'src/main/java'
+                    jacoco classPattern: 'build/classes/java/main', execPattern: 'build/jacoco/test.exec', sourcePattern: 'src/main/java', additionalOptions: '--sourcefiles src/main/java --classfiles build/classes/java/main --tests src/test/java'
                 }
             }
         }
