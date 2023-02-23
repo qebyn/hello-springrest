@@ -55,8 +55,7 @@ pipeline {
         }
         stage('BuildingElastic') {
             steps {
-                withAWS(credentials:'aws_access_key
-') {
+                withAWS(credentials:'aws_access_key') {
                     dir('./elasticfolder') {
 			sh 'eb deploy springrest-qebyn'
                     }   
