@@ -9,18 +9,20 @@ pipeline {
             steps {
                 sh 'docker-compose config'
                 sh './gradlew test jacocoTestReport'
+                sh './gradlew check'
             }
             post {
                 always {
                     junit skipOldReports: true, skipPublishingChecks: true, testResults: 'build/test-results/test/*xml'
-                    jacoco classPattern: 'build/classes/java/main', execPattern: 'build/jacoco/test.exec', sourcePattern: 'src/main/java', exclusionPattern: 'src/test/java/**'
+                    jacoco classPattern: 'build/classes/java/main', execPattern: 'build/jacoco/*.exec', sourcePattern: 'src/main/java/com/example/restservice'
+                    recordIssues(tools: [pmdParser(pattern: 'build/reports/pmd/*.xml')])
                 }
             }
         }
         stage('Building the Docker image') {
             steps {
                 sh 'docker-compose build'
-                sh "git tag 1.0.${BUILD_NUMBER}"
+                sh 'git tag 1.0.${BUILD_NUMBER}'
                 sshagent(['github_access_ssh']) {
                     sh 'git push --tags'
                     sh "docker tag ghcr.io/qebyn/hello-springrest/springrest:latest ghcr.io/qebyn/hello-springrest/springrest:1.0.${BUILD_NUMBER}"
@@ -36,13 +38,12 @@ pipeline {
         }
         stage('Deploying the application to Elastic Beanstalk') {
             steps {
-                withAWS(credentials: 'aws_access_key') {
+                withAWS(credentials:'clave-aws') {
                     dir('./elasticfolder') {
-                        sh 'eb create springrest-qebyn'
+			sh 'eb deploy springrest-qebyn'
                     }
                 }
             }
         }
     }
 }
-
