@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'jacoco'
+    id 'pmd'
 }
 
 group = 'com.example'
@@ -15,7 +16,9 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.9.5'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 test {
@@ -31,3 +34,7 @@ jacocoTestReport {
     }
 }
 
+pmd {
+    consoleOutput = true
+    ignoreFailures = true
+}
