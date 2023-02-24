@@ -44,7 +44,7 @@ pipeline {
                         }       
                 }
         }
-        /*stage('Docker Login and Push'){
+        stage('Docker Login and Push'){
            steps {
              withCredentials([string(credentialsId: 'github-tokenqebyn', variable: 'PAT')]) {
                  sh 'echo $PAT | docker login ghcr.io -u qebyn --password-stdin && docker-compose push && docker push ghcr.io/qebyn/hello-springrest/springrest:1.0.${BUILD_NUMBER}'
@@ -52,7 +52,7 @@ pipeline {
              }
 
            }
-        }*/
+        }
         stage('Building Elastic Beanstalk Environment') {
             steps {
                 withAWS(credentials:'aws_access_key') {
